@@ -28,11 +28,7 @@ dst_path="./images/"
 if not os.path.exists(dst_path):
 	os.mkdir(dst_path)
 
-# proxy
-# os.environ["ftp_proxy"] = "http://child-prc.intel.com:913"
-# os.environ["http_proxy"] = "http://child-prc.intel.com:913"
-# os.environ["https_proxy"] = "http://child-prc.intel.com:913"
-
+# loop download
 # it = iter(idx_list)
 # for x, y in zip(it, it):
 #     if fn_list[y] == 'None':
@@ -42,6 +38,7 @@ if not os.path.exists(dst_path):
 #     	print("Donwload:", fn_list[y])
 #     	wget.download(fn_list[y], dst_path + fn_list[x])
 
+# Multiple threads download
 import os
 import requests
 from time import time
@@ -64,9 +61,7 @@ arr_multiple_param=[]
 for x, y in zip(it, it):
 	arr_multiple_param.append([x, y])
 
-#ThreadPool(10).imap_unordered(url_response, arr_multiple_param)
-
-with Pool(2) as p:
+with Pool(20) as p:
 	p.map(url_response, arr_multiple_param)
 
 print("Download finish")
