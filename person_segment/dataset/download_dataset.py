@@ -25,16 +25,48 @@ for i in range( fn_num ):
 
 # Check result save path
 dst_path="./images/"
-if os.path.exists(dst_path):
+if not os.path.exists(dst_path):
 	os.mkdir(dst_path)
 
+# proxy
+# os.environ["ftp_proxy"] = "http://child-prc.intel.com:913"
+# os.environ["http_proxy"] = "http://child-prc.intel.com:913"
+# os.environ["https_proxy"] = "http://child-prc.intel.com:913"
+
+# it = iter(idx_list)
+# for x, y in zip(it, it):
+#     if fn_list[y] == 'None':
+#     	print(fn_list[x], " == ", fn_list[y])
+#     	continue
+#     else:
+#     	print("Donwload:", fn_list[y])
+#     	wget.download(fn_list[y], dst_path + fn_list[x])
+
+import os
+import requests
+from time import time
+from multiprocessing import Pool
+
+def url_response(param):
+	global fn_list
+	print(param)
+	[x, y] = param
+
+	if fn_list[y] == 'None':
+		print(fn_list[x], " == ", fn_list[y])
+	else:
+		print("Donwload:", fn_list[y])
+		myfile = requests.get(fn_list[y])
+		open(dst_path + fn_list[x], 'wb').write(myfile.content)
+
 it = iter(idx_list)
+arr_multiple_param=[]
 for x, y in zip(it, it):
-    if fn_list[y] == 'None':
-    	print(fn_list[x], " == ", fn_list[y])
-    	continue
-    else:
-    	print("Donwload:", fn_list[y])
-    	wget.download(fn_list[y], dst_path + fn_list[x])
+	arr_multiple_param.append([x, y])
+
+#ThreadPool(10).imap_unordered(url_response, arr_multiple_param)
+
+with Pool(2) as p:
+	p.map(url_response, arr_multiple_param)
 
 print("Download finish")
